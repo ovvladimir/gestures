@@ -38,10 +38,10 @@ while True:
     cv2.putText(frame, f"fps: {int(counter / (time.monotonic() - startTime))}",
         (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_TRIPLEX, 1, color)
 
-    cv2.imshow(model, frame)
-
     fps.update()
     counter += 1
+
+    cv2.imshow(model, frame)
 
     if cv2.waitKey(1) & 0xFF == 27 or cv2.getWindowProperty(model, cv2.WND_PROP_VISIBLE) < 1:
         break
