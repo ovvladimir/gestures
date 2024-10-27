@@ -20,7 +20,7 @@ detector = YOLO(modelPath1)
 
 numframe = 0
 color = (255, 255, 255)
-start = time.monotonic()
+timer_start = time.monotonic()
 vs = VideoStream().start()
 
 print()
@@ -29,13 +29,14 @@ while True:
     if not vs.ret:
         break
     frame = vs.video()
+    timer = time.monotonic() - timer_start
 
     # detect = detector.predict(frame, verbose=False)[0].verbose()[1:].replace(")", "").replace(",", "")
     for detect in detector.predict(frame, verbose=False):
         detect = detect.verbose().replace("(", "").replace(")", "").replace(",", "")
     cv2.putText(frame, detect, (10, 30), cv2.FONT_HERSHEY_TRIPLEX, 1, color)
 
-    cv2.putText(frame, f"fps: {int(numframe / (time.monotonic() - start))}",
+    cv2.putText(frame, f"fps: {int(numframe / timer)}",
         (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_TRIPLEX, 1, color)
 
     numframe += 1
@@ -46,9 +47,8 @@ while True:
         break
 
 
-stop = time.monotonic() - start
+print("[INFO] stopped camera...")
+print("[INFO] time: {:.2f} sec".format(timer))
+print("[INFO] FPS: {:.2f}".format(numframe / timer))
 cv2.destroyAllWindows()
 vs.stop()
-print("[INFO] stopped camera...")
-print("[INFO] time: {:.2f} sec".format(stop))
-print("[INFO] FPS: {:.2f}".format(numframe / stop))
