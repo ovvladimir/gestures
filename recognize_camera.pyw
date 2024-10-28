@@ -7,16 +7,15 @@ import cv2
 import os
 from ultralytics import YOLO
 
-args = {"model": "yolov8n"}
-model = args["model"].lower()
-
 dir = os.path.dirname(__file__)
-modelPath1 = os.path.join(dir, "yolov8n/best.pt")  # 50 epoch
+modelPath = os.path.join(dir, "yolov8n/best.pt")
+detector = YOLO(modelPath)
+# modelPath1 = os.path.join(dir, "yolov8n/best.pt")  # 50 epoch
 # modelPath2 = os.path.join(dir, "yolov8s/best.pt")  # 50 epoch
-# modelPath1 = os.path.join(dir, "yolo11n/yolo11n.pt")
+# modelPath = os.path.join(dir, "yolo11n/yolo11n.pt")
 # detector = YOLO(modelPath1, modelPath2)
-detector = YOLO(modelPath1)
 
+model = os.path.basename(os.path.dirname(modelPath)).lower()
 numframe = 0
 color = (255, 255, 255)
 timer_start = time.monotonic()
@@ -30,9 +29,6 @@ while True:
     frame = vs.video()
     timer = time.monotonic() - timer_start
 
-    # detect = detector.predict(frame, verbose=False)[0].verbose()[1:].replace(")", "").replace(",", "")
-    # for detect in detector.predict(frame, verbose=False):
-    #     detect = detect.verbose().replace("(", "").replace(")", "").replace(",", "")
     detect = detector.predict(frame, verbose=False)[0].verbose().replace("(", "").replace(")", "").replace(",", "")
     cv2.putText(frame, detect, (10, 30), cv2.FONT_HERSHEY_TRIPLEX, 1, color)
 
