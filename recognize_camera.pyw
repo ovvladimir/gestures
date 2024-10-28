@@ -27,11 +27,11 @@ while True:
     if not vs.ret:
         break
     frame = vs.video()
-    timer = time.monotonic() - timer_start
 
     detect = detector.predict(frame, verbose=False)[0].verbose().replace("(", "").replace(")", "").replace(",", "")
     cv2.putText(frame, detect, (10, 30), cv2.FONT_HERSHEY_TRIPLEX, 1, color)
 
+    timer = time.monotonic() - timer_start
     cv2.putText(frame, f"fps: {int(numframe / timer)}",
         (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_TRIPLEX, 1, color)
 
