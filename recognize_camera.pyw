@@ -1,4 +1,5 @@
 # https://docs.ultralytics.com/usage/cli/#how-do-i-customize-yolo11-cli-commands-to-override-default-arguments
+# https://universe.roboflow.com/lebanese-university-grkoz/hand-gesture-recognition-y5827/dataset/2/images/?split=test&predictions=true
 
 from camvideostream import VideoStream
 import time
@@ -10,11 +11,9 @@ args = {"model": "yolov8n"}
 model = args["model"].lower()
 
 dir = os.path.dirname(__file__)
-modelPath1 = os.path.join(dir, "yolov8n/weights/best.pt")
-# modelPath2 = os.path.join(dir, "yolov8n/weights/last.pt")
-# modelPath1 = os.path.join(dir, "yolov8n/yolov8n")
+modelPath1 = os.path.join(dir, "yolov8n/best.pt")  # 50 epoch
+# modelPath2 = os.path.join(dir, "yolov8s/best.pt")  # 50 epoch
 # modelPath1 = os.path.join(dir, "yolo11n/yolo11n.pt")
-# modelPath1 = os.path.join(dir, "yolov8s/weights/best.pt")
 # detector = YOLO(modelPath1, modelPath2)
 detector = YOLO(modelPath1)
 
@@ -32,8 +31,9 @@ while True:
     timer = time.monotonic() - timer_start
 
     # detect = detector.predict(frame, verbose=False)[0].verbose()[1:].replace(")", "").replace(",", "")
-    for detect in detector.predict(frame, verbose=False):
-        detect = detect.verbose().replace("(", "").replace(")", "").replace(",", "")
+    # for detect in detector.predict(frame, verbose=False):
+    #     detect = detect.verbose().replace("(", "").replace(")", "").replace(",", "")
+    detect = detector.predict(frame, verbose=False)[0].verbose().replace("(", "").replace(")", "").replace(",", "")
     cv2.putText(frame, detect, (10, 30), cv2.FONT_HERSHEY_TRIPLEX, 1, color)
 
     cv2.putText(frame, f"fps: {int(numframe / timer)}",
