@@ -26,6 +26,9 @@ class VideoStream:
 
     def video(self):
         return self.frame
+    
+    def rt(self):
+        return self.ret
 
     def stop(self):
         self.stopped = True

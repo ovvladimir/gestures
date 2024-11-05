@@ -2,6 +2,7 @@
 # https://universe.roboflow.com/lebanese-university-grkoz/hand-gesture-recognition-y5827/dataset/2/images/?split=test&predictions=true
 
 from camvideostream import VideoStream
+from collections import deque
 import time
 import cv2
 import os
@@ -15,27 +16,32 @@ detector = YOLO(modelPath)
 # modelPath = os.path.join(dir, "yolo11n/yolo11n.pt")
 # detector = YOLO(modelPath1, modelPath2)
 
+vs = VideoStream().start()
 model = os.path.basename(os.path.dirname(modelPath)).lower()
 numframe = 0
 color = (255, 255, 255)
 timer_start = time.monotonic()
-vs = VideoStream().start()
+timestamps = deque([timer_start], maxlen=30)
 
 print()
 print("[INFO] starting camera...")
+
+
+def fps() -> float:
+    timestamps.append(time.monotonic())
+    times = timestamps[-1] - timestamps[0]
+    return round(len(timestamps) / times, 1)
+
+
 while True:
-    if not vs.ret:
+    if not vs.rt():
         break
     frame = vs.video()
 
     detect = detector.predict(frame, verbose=False)[0].verbose().replace("(", "").replace(")", "").replace(",", "")
+
     cv2.putText(frame, detect, (10, 30), cv2.FONT_HERSHEY_TRIPLEX, 1, color)
-
-    timer = time.monotonic() - timer_start
-    cv2.putText(frame, f"fps: {int(numframe / timer)}",
-        (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_TRIPLEX, 1, color)
-
-    numframe += 1
+    cv2.putText(frame, f"fps: {fps()}", (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_TRIPLEX, 1, color)
 
     cv2.imshow(model, frame)
 
@@ -43,8 +49,8 @@ while True:
         break
 
 
+print(f"[INFO] time: {round(time.monotonic() - timer_start, 2)}")
+print(f"[INFO] FPS: {fps()}")
 print("[INFO] stopped camera...")
-print("[INFO] time: {:.2f} sec".format(timer))
-print("[INFO] FPS: {:.2f}".format(numframe / timer))
 cv2.destroyAllWindows()
 vs.stop()
