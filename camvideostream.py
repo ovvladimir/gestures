@@ -10,7 +10,7 @@ class VideoStream:
         # self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.ret, self.frame = self.stream.read()
         self.name = name
-        self.stopped = False
+        self.stopped = True
 
     def start(self):
         t = Thread(target=self.update, name=self.name, args=())
@@ -19,16 +19,11 @@ class VideoStream:
         return self
 
     def update(self):
-        while True:
-            if self.stopped:
-                return
+        while self.stopped:
             self.ret, self.frame = self.stream.read()
 
     def video(self):
-        return self.frame
-    
-    def rt(self):
-        return self.ret
+        return self.ret, self.frame
 
     def stop(self):
-        self.stopped = True
+        self.stopped = False

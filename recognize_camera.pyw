@@ -34,9 +34,9 @@ def fps() -> float:
 
 
 while True:
-    if not vs.rt():
+    if not vs.video()[0]:
         break
-    frame = vs.video()
+    frame = vs.video()[1]
 
     detect = detector.predict(frame, verbose=False)[0].verbose().replace("(", "").replace(")", "").replace(",", "")
 
@@ -52,5 +52,5 @@ while True:
 print(f"[INFO] time: {round(time.monotonic() - timer_start, 2)}")
 print(f"[INFO] FPS: {fps()}")
 print("[INFO] stopped camera...")
-cv2.destroyAllWindows()
 vs.stop()
+cv2.destroyAllWindows()
