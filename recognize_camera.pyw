@@ -34,9 +34,10 @@ def fps() -> float:
 
 
 while True:
-    if not vs.video()[0]:
+    r, f = vs.video()
+    if not r:
         break
-    frame = vs.video()[1]
+    frame = f
 
     detect = detector.predict(frame, verbose=False)[0].verbose().replace("(", "").replace(")", "").replace(",", "")
 
